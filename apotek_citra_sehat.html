@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Apotek Citra Sehat — Sistem Informasi Manajemen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green-50: #E8F5E9;
+  --green-100: #C8E6C9;
+  --green-200: #A5D6A7;
+  --green-400: #66BB6A;
+  --green-600: #2E7D32;
+  --green-700: #1B5E20;
+  --blue-600: #1976D2;
+  --blue-50: #E3F2FD;
+  --orange: #FF9800;
+  --orange-50: #FFF3E0;
+  --red: #F44336;
+  --red-50: #FFEBEE;
+  --bg-page: #F0F4F0;
+  --bg-sidebar: #1B5E20;
+  --text-dark: #1A2E1A;
+  --text-mid: #4A5C4A;
+  --text-muted: #7A8C7A;
+  --border: #D4E8D4;
+  --shadow: 0 2px 12px rgba(46,125,50,0.09);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-page); color: var(--text-dark); min-height: 100vh; font-size: 14px; }
+
+/* ─── LAYOUT ─── */
+#app { min-height: 100vh; }
+.screen { display: none; }
+.screen.active { display: flex; }
+
+/* ─── LOGIN ─── */
+#login-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 45%, #388E3C 75%, #43A047 100%);
+  align-items: stretch;
+}
+.login-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+.login-left::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  top: -200px; left: -200px;
+}
+.login-left::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -150px; right: -100px;
+}
+.login-brand { text-align: center; position: relative; z-index: 2; }
+.login-brand-icon {
+  width: 96px; height: 96px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.login-brand-icon svg { width: 56px; height: 56px; fill: white; }
+.login-brand h1 { font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 800; color: white; margin-bottom: 8px; }
+.login-brand p { font-size: 15px; color: rgba(255,255,255,0.7); max-width: 340px; line-height: 1.6; }
+.login-features { margin-top: 48px; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 2; }
+.lf-item { display: flex; align-items: center; gap: 14px; }
+.lf-dot { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.lf-dot svg { width: 18px; height: 18px; fill: rgba(255,255,255,0.9); }
+.lf-item span { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; }
+.login-right {
+  width: 480px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 56px;
+}
+.login-form-wrap { width: 100%; }
+.login-form-wrap h2 { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-dark); margin-bottom: 6px; }
+.login-form-wrap .sub { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-mid); margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: #FAFFF9;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  -webkit-appearance: none;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--green-600);
+  box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+}
+.form-row-2 { display: flex; align-items: center; margin-bottom: 24px; font-size: 13px; }
+.form-row-2 a { color: var(--green-600); margin-left: auto; text-decoration: none; font-weight: 600; }
+.btn-login {
+  width: 100%;
+  padding: 15px;
+  background: var(--green-600);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.03em;
+}
+.btn-login:hover { background: var(--green-700); transform: translateY(-1px); }
+
+/* ─── MAIN APP ─── */
+#main-app { flex-direction: row; min-height: 100vh; }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sidebar-logo-icon {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.14);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.sidebar-logo-icon svg { width: 24px; height: 24px; fill: white; }
+.sidebar-logo-text .name { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: white; line-height: 1.2; }
+.sidebar-logo-text .sub { font-size: 10px; color: rgba(255,255,255,0.5); }
+.sidebar-nav { flex: 1; padding: 14px 0; overflow-y: auto; }
+.nav-section-label {
+  padding: 14px 20px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 20px;
+  color: rgba(255,255,255,0.68);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  user-select: none;
+  position: relative;
+}
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.nav-item:hover { background: rgba(255,255,255,0.07); color: white; }
+.nav-item.active {
+  background: rgba(255,255,255,0.11);
+  color: white;
+  border-left-color: #A5D6A7;
+  font-weight: 600;
+}
+.nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+.nav-badge.green { background: var(--green-400); }
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-user { display: flex; align-items: center; gap: 10px; }
+.sidebar-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: white; flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.25);
+}
+.sidebar-user-info .uname { font-size: 13px; font-weight: 700; color: white; }
+.sidebar-user-info .urole { font-size: 11px; color: rgba(255,255,255,0.5); }
+.sidebar-logout-btn {
+  margin-left: auto;
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.45);
+  padding: 5px; border-radius: 6px; transition: all 0.15s;
+}
+.sidebar-logout-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+.sidebar-logout-btn svg { width: 16px; height: 16px; display: block; }
+
+/* ─── MAIN CONTENT ─── */
+.main-content { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ─── TOPBAR ─── */
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: sticky;
+  top: 0; z-index: 50;
+  box-shadow: 0 1px 8px rgba(46,125,50,0.06);
+}
+.topbar-title { font-size: 17px; font-weight: 800; color: var(--text-dark); flex: 1; font-family: 'Sora', sans-serif; }
+.topbar-search { position: relative; flex: 0 0 280px; }
+.topbar-search input {
+  width: 100%;
+  padding: 9px 16px 9px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  background: var(--bg-page);
+  color: var(--text-dark);
+  transition: all 0.2s;
+}
+.topbar-search input:focus { border-color: var(--green-600); background: white; box-shadow: 0 0 0 3px rgba(46,125,50,0.08); }
+.topbar-search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--text-muted); }
+.topbar-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg-page);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-mid);
+  transition: all 0.15s; position: relative;
+}
+.topbar-btn:hover { background: var(--green-50); border-color: var(--green-200); }
+.topbar-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.notif-dot {
+  position: absolute; top: -2px; right: -2px;
+  width: 17px; height: 17px;
+  background: var(--red); border-radius: 50%;
+  font-size: 9px; font-weight: 800; color: white;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+.topbar-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--green-600); color: white;
+  font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: 2px solid var(--green-200);
+}
+
+/* ─── CONTENT AREA ─── */
+.content-area { padding: 28px 32px; flex: 1; }
+.page { display: none; }
+.page.active { display: block; }
+.page-header { margin-bottom: 24px; }
+.page-header h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--text-dark); }
+.page-header p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+.breadcrumb { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.breadcrumb span { color: var(--green-600); font-weight: 600; }
+
+/* ─── STATS GRID ─── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+.stat-card {
+  background: white; border-radius: var(--radius);
+  padding: 20px 22px; border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46,125,50,0.12); }
+.stat-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stat-icon svg { width: 24px; height: 24px; fill: currentColor; }
+.stat-icon.green { background: var(--green-50); color: var(--green-600); }
+.stat-icon.blue { background: var(--blue-50); color: var(--blue-600); }
+.stat-icon.orange { background: var(--orange-50); color: var(--orange); }
+.stat-icon.red { background: var(--red-50); color: var(--red); }
+.stat-info .label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+.stat-info .value { font-size: 24px; font-weight: 800; color: var(--text-dark); line-height: 1; font-family: 'Sora', sans-serif; }
+.stat-info .sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.stat-info .sub.up { color: #2E7D32; font-weight: 600; }
+.stat-info .sub.warn { color: var(--orange); font-weight: 600; }
+.stat-info .sub.danger { color: var(--red); font-weight: 600; }
+
+/* ─── QUICK ACTIONS ─── */
+.quick-actions { display: flex; gap: 10px; margin-bottom: 24px; align-items: center; }
+.btn-action {
+  padding: 10px 20px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 700; font-family: inherit;
+  cursor: pointer; border: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: all 0.15s; text-decoration: none;
+}
+.btn-action svg { width: 15px; height: 15px; flex-shrink: 0; fill: currentColor; }
+.btn-action.primary { background: var(--green-600); color: white; }
+.btn-action.primary:hover { background: var(--green-700); transform: translateY(-1px); }
+.btn-action.secondary { background: white; color: var(--green-600); border: 2px solid var(--green-200); }
+.btn-action.secondary:hover { background: var(--green-50); }
+.btn-action.outline { background: white; color: var(--blue-600); border: 2px solid #BBDEFB; }
+.btn-action.outline:hover { background: var(--blue-50); }
+.btn-action.danger { background: var(--red-50); color: var(--red); border: 2px solid #FFCDD2; }
+.btn-action.sm { padding: 7px 14px; font-size: 12px; }
+
+/* ─── GRID LAYOUTS ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-20 { margin-bottom: 20px; }
+
+/* ─── CARD ─── */
+.card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
+.card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.card-header h3 { font-size: 14px; font-weight: 700; color: var(--text-dark); flex: 1; }
+.card-header .card-link { font-size: 12px; color: var(--green-600); font-weight: 600; cursor: pointer; }
+
+/* ─── TABLE ─── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th {
+  padding: 11px 18px; text-align: left;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-muted); background: #FAFFF9;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td { padding: 12px 18px; border-bottom: 1px solid #EEF5EE; color: var(--text-mid); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #FAFFF9; }
+.data-table td.strong { font-weight: 700; color: var(--text-dark); }
+
+/* ─── BADGE ─── */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge.green { background: var(--green-50); color: var(--green-700); }
+.badge.yellow { background: #FFF8E1; color: #E65100; }
+.badge.red { background: var(--red-50); color: #C62828; }
+.badge.blue { background: var(--blue-50); color: #0D47A1; }
+.badge.purple { background: #EDE7F6; color: #4527A0; }
+.badge.gray { background: #F5F5F5; color: #616161; }
+.badge.orange { background: var(--orange-50); color: #E65100; }
+
+/* ─── ICON BUTTON ─── */
+.btn-icon {
+  width: 32px; height: 32px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); background: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted); transition: all 0.15s;
+}
+.btn-icon:hover { background: var(--green-50); border-color: var(--green-200); color: var(--green-600); }
+.btn-icon.danger:hover { background: var(--red-50); border-color: #FFCDD2; color: var(--red); }
+.btn-icon svg { width: 14px; height: 14px; fill: currentColor; }
+.btn-icon-row { display: flex; gap: 5px; }
+
+/* ─── FILTERS ─── */
+.filters-row { display: flex; gap: 10px; margin-bottom: 18px; align-items: center; flex-wrap: wrap; }
+.filters-row input, .filters-row select {
+  padding: 9px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-family: inherit;
+  outline: none; background: white; color: var(--text-dark);
+  -webkit-appearance: none;
+}
+.filters-row input:focus, .filters-row select:focus { border-color: var(--green-600); }
+.filters-row .ml-auto { margin-left: auto; display: flex; gap: 8px; }
+
+/* ─── CHART ─── */
+.chart-area { padding: 24px; height: 220px; display: flex; align-items: flex-end; gap: 8px; }
+.chart-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+.chart-bar { width: 100%; max-width: 44px; background: var(--green-100); border-radius: 5px 5px 0 0; cursor: pointer; transition: background 0.2s; }
+.chart-bar:hover, .chart-bar.active { background: var(--green-600); }
+.chart-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.chart-value { font-size: 10px; color: var(--text-muted); }
+
+/* ─── ALERT LIST ─── */
+.alert-item { padding: 13px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 11px; font-size: 13px; }
+.alert-item:last-child { border-bottom: none; }
+.alert-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.alert-dot.red { background: var(--red); }
+.alert-dot.orange { background: var(--orange); }
+.alert-dot.yellow { background: #FDD835; }
+.alert-item .aname { font-weight: 600; color: var(--text-dark); flex: 1; }
+.alert-item .aval { font-size: 11px; font-weight: 700; }
+.alert-item .aval.red { color: var(--red); }
+.alert-item .aval.orange { color: var(--orange); }
+
+/* ─── PAGINATION ─── */
+.pagination { display: flex; align-items: center; gap: 4px; justify-content: flex-end; padding: 14px 18px; border-top: 1px solid var(--border); }
+.pg-btn { width: 32px; height: 32px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: white; cursor: pointer; font-size: 12px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-family: inherit; transition: all 0.15s; }
+.pg-btn.active { background: var(--green-600); border-color: var(--green-600); color: white; }
+.pg-btn:hover:not(.active) { background: var(--green-50); border-color: var(--green-200); }
+
+/* ─── TRANSACTION ─── */
+.txn-layout { display: grid; grid-template-columns: 1fr 400px; gap: 22px; }
+.search-bar-row { display: flex; gap: 10px; margin-bottom: 18px; }
+.search-bar-row input {
+  flex: 1; padding: 14px 18px;
+  border: 2px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 15px; font-family: inherit; outline: none; background: white;
+  transition: border-color 0.2s;
+}
+.search-bar-row input:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(46,125,50,0.08); }
+.btn-scan {
+  padding: 14px 24px;
+  background: var(--green-600); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-weight: 700; font-family: inherit; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: background 0.15s;
+}
+.btn-scan svg { width: 18px; height: 18px; fill: white; }
+.btn-scan:hover { background: var(--green-700); }
+.drug-info-panel { background: #FAFFF9; border: 1.5px solid var(--green-100); border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 18px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+.dip-item .dip-label { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.dip-item .dip-val { font-size: 15px; font-weight: 800; color: var(--text-dark); }
+.dip-item .dip-val.green { color: var(--green-600); }
+.dip-item .dip-val.orange { color: var(--orange); }
+.qty-ctrl { display: flex; align-items: center; gap: 8px; }
+.qty-btn { width: 30px; height: 30px; border-radius: 8px; border: 2px solid var(--border); background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--green-600); transition: all 0.15s; }
+.qty-btn:hover { background: var(--green-50); border-color: var(--green-400); }
+.qty-val { font-size: 16px; font-weight: 800; min-width: 28px; text-align: center; }
+
+/* ─── PAYMENT PANEL ─── */
+.payment-panel { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; }
+.pp-header { padding: 18px 22px; border-bottom: 1px solid var(--border); }
+.pp-header h3 { font-size: 15px; font-weight: 700; }
+.total-display { padding: 24px 22px; text-align: center; background: linear-gradient(135deg, var(--green-600), var(--green-700)); }
+.total-display .tl { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.total-display .tv { font-size: 38px; font-weight: 800; color: white; font-family: 'Sora', sans-serif; }
+.discount-row { padding: 14px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.discount-row label { color: var(--text-muted); font-weight: 600; flex: 1; }
+.discount-row input { width: 90px; text-align: right; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; outline: none; }
+.pm-section { padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.pm-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+.pm-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pm-opt { padding: 11px 8px; border: 2px solid var(--border); border-radius: var(--radius-sm); text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text-mid); transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.pm-opt:hover { border-color: var(--green-400); color: var(--green-600); background: var(--green-50); }
+.pm-opt.selected { border-color: var(--green-600); background: var(--green-50); color: var(--green-700); }
+.pm-opt svg { width: 15px; height: 15px; fill: currentColor; }
+.cash-section { padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.cash-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cash-row label { font-size: 12px; color: var(--text-muted); font-weight: 600; width: 100px; flex-shrink: 0; }
+.cash-row input { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; font-weight: 700; outline: none; text-align: right; }
+.cash-row input:focus { border-color: var(--green-600); }
+.change-display { background: var(--green-50); border: 1.5px solid var(--green-100); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.change-display .cd-l { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.change-display .cd-v { font-size: 20px; font-weight: 800; color: var(--green-700); font-family: 'Sora', sans-serif; }
+.pay-btn {
+  margin: 18px 22px;
+  padding: 18px;
+  background: var(--green-600); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 20px; font-weight: 800; font-family: 'Sora', sans-serif;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.15s; letter-spacing: 0.05em;
+}
+.pay-btn:hover { background: var(--green-700); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(46,125,50,0.3); }
+.pay-btn svg { width: 24px; height: 24px; fill: white; }
+.pay-btn small { font-size: 12px; opacity: 0.65; font-family: inherit; font-weight: 600; margin-left: 4px; }
+.action-row { padding: 0 22px 18px; display: flex; gap: 8px; }
+
+/* ─── FORM GRID ─── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 22px; }
+.form-grid .span-2 { grid-column: span 2; }
+.fg-label { font-size: 11px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.fg-input, .fg-select {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: inherit; outline: none;
+  color: var(--text-dark); background: white;
+  transition: border-color 0.15s; -webkit-appearance: none;
+}
+.fg-input:focus, .fg-select:focus { border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(46,125,50,0.08); }
+.fg-input.valid { border-color: var(--green-400); }
+
+/* ─── EXPIRY ─── */
+.exp-tabs { display: flex; gap: 0; margin-bottom: 20px; border: 2px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: white; width: fit-content; }
+.exp-tab { padding: 9px 24px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-muted); transition: all 0.15s; border-right: 1.5px solid var(--border); }
+.exp-tab:last-child { border-right: none; }
+.exp-tab.active { background: var(--green-600); color: white; }
+.exp-tab:hover:not(.active) { background: var(--green-50); color: var(--green-600); }
+
+/* ─── STOCK ─── */
+.stock-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.stock-bar-name { width: 180px; font-size: 12px; font-weight: 600; color: var(--text-dark); flex-shrink: 0; }
+.stock-bar-bg { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+.stock-bar-fill { height: 100%; border-radius: 5px; transition: width 0.4s; }
+.stock-bar-val { font-size: 12px; font-weight: 800; min-width: 36px; text-align: right; }
+
+/* ─── REPORTS ─── */
+.report-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.report-tab { padding: 9px 20px; border: 2px solid var(--border); border-radius: 24px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-muted); background: white; transition: all 0.15s; }
+.report-tab.active { border-color: var(--green-600); background: var(--green-600); color: white; }
+.report-tab:hover:not(.active) { border-color: var(--green-400); color: var(--green-600); }
+
+/* ─── SETTINGS ─── */
+.settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 22px; }
+.settings-nav { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 12px; }
+.sn-item { padding: 11px 14px; font-size: 13px; cursor: pointer; color: var(--text-mid); border-radius: var(--radius-sm); font-weight: 600; transition: all 0.15s; display: flex; align-items: center; gap: 10px; margin-bottom: 2px; }
+.sn-item:hover { background: var(--green-50); color: var(--green-700); }
+.sn-item.active { background: var(--green-50); color: var(--green-700); }
+.sn-item svg { width: 16px; height: 16px; fill: currentColor; }
+
+/* ─── NOTIFICATIONS ─── */
+.notif-item { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 14px; cursor: pointer; transition: background 0.15s; }
+.notif-item:hover { background: #FAFFF9; }
+.notif-item.unread { background: #F0FFF0; }
+.notif-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.notif-icon svg { width: 20px; height: 20px; fill: currentColor; }
+.notif-icon.stock { background: var(--orange-50); color: var(--orange); }
+.notif-icon.expiry { background: var(--red-50); color: var(--red); }
+.notif-icon.system { background: var(--blue-50); color: var(--blue-600); }
+.notif-body { flex: 1; }
+.notif-body .nt { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+.notif-body .nm { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+.notif-body .ntime { font-size: 11px; color: var(--text-muted); margin-top: 5px; font-weight: 600; }
+.unread-dot { width: 10px; height: 10px; background: var(--green-600); border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+/* ─── PERM MATRIX ─── */
+.perm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.perm-table th, .perm-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); text-align: center; }
+.perm-table th { background: #FAFFF9; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.perm-table td:first-child { text-align: left; font-weight: 600; color: var(--text-dark); }
+.perm-check { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--border); cursor: pointer; transition: all 0.15s; }
+.perm-check.checked { background: var(--green-600); border-color: var(--green-600); }
+.perm-check.checked::after { content: '✓'; font-size: 12px; color: white; font-weight: 800; }
+
+/* ─── MISC ─── */
+.category-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 13px; }
+.cat-dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
+.cat-label { flex: 1; font-weight: 500; }
+.cat-val { font-weight: 800; color: var(--text-dark); }
+
+/* ─── MODAL / INFO BOX ─── */
+.info-box { background: var(--red-50); border: 1.5px solid #FFCDD2; border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px; }
+.info-box.orange { background: var(--orange-50); border-color: #FFE0B2; }
+.info-box h4 { font-size: 13px; font-weight: 700; color: #C62828; margin-bottom: 4px; }
+.info-box.orange h4 { color: #E65100; }
+.info-box p { font-size: 12px; color: #B71C1C; line-height: 1.5; }
+.info-box.orange p { color: #BF360C; }
+
+/* ─── RESPONSIVE OVERRIDE ─── */
+@media (min-width: 1440px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-screen" class="screen active">
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M11 7h2v4h4v2h-4v4h-2v-4H7v-2h4V7zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+      </div>
+      <h1>Apotek Citra Sehat</h1>
+      <p>Sistem Informasi Manajemen Stok dan Penjualan Obat — Kampus IPB Dramaga</p>
+    </div>
+    <div class="login-features">
+      <div class="lf-item"><div class="lf-dot"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div><span>Transaksi real-time dengan kalkulasi otomatis</span></div>
+      <div class="lf-item"><div class="lf-dot"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><span>Monitoring kadaluarsa & alert stok menipis</span></div>
+      <div class="lf-item"><div class="lf-dot"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div><span>Laporan penjualan & stok komprehensif</span></div>
+      <div class="lf-item"><div class="lf-dot"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div><span>Multi-role dengan hak akses terpisah</span></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2>Selamat Datang</h2>
+      <p class="sub">Masuk ke sistem untuk melanjutkan operasional apotek</p>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-user" value="rina.kasir" placeholder="Masukkan username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" value="password123" placeholder="Masukkan password" />
+      </div>
+      <div class="form-group">
+        <label>Login sebagai</label>
+        <select id="login-role">
+          <option value="Kasir">Kasir</option>
+          <option value="Admin">Admin</option>
+          <option value="Apoteker">Apoteker</option>
+          <option value="Pemilik">Pemilik Apotek</option>
+        </select>
+      </div>
+      <div class="form-row-2">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);"><input type="checkbox" /> Ingat saya</label>
+        <a href="#">Lupa Password?</a>
+      </div>
+      <button class="btn-login" onclick="doLogin()">Masuk ke Sistem</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="main-app" class="screen">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M11 7h2v4h4v2h-4v4h-2v-4H7v-2h4V7zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+      </div>
+      <div class="sidebar-logo-text">
+        <div class="name">Apotek Citra Sehat</div>
+        <div class="sub">IPB Dramaga Campus</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Utama</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('drugs', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 10h-2v5h2v-5zm4 0h-2v5h2v-5zm8.5 7H4v2h15v-2zm-4.5-7h-2v5h2v-5zM11.5 1L2 6v2h19V6l-9.5-5z"/></svg>
+        Data Obat
+      </div>
+      <div class="nav-section-label">Penjualan</div>
+      <div class="nav-item" onclick="showPage('transaction', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-7-3.9v-4.1h5v-2H8.27L7.18 7H3V9h2.59L8 16h11v-2H9.1l-.7-1.9zM20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.57-2.1-4.64-4.67-4.64-1.38 0-2.62.59-3.51 1.53z"/></svg>
+        Transaksi Baru
+        <span class="nav-badge green">F2</span>
+      </div>
+      <div class="nav-item" onclick="showPage('history', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+        Riwayat Transaksi
+      </div>
+      <div class="nav-section-label">Inventori</div>
+      <div class="nav-item" onclick="showPage('stock', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.57-2.1-4.64-4.67-4.64-1.38 0-2.62.59-3.51 1.53-.89-.94-2.13-1.53-3.51-1.53C3.74 0 1.64 2.07 1.64 4.64c0 .48.11.92.18 1.36H0v14h20V6zm-8.5 12H3.5V8h8v10zm9 0h-8V8h8v10z"/></svg>
+        Manajemen Stok
+      </div>
+      <div class="nav-item" onclick="showPage('expiry', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        Monitoring Kadaluarsa
+        <span class="nav-badge">5</span>
+      </div>
+      <div class="nav-section-label">Analitik</div>
+      <div class="nav-item" onclick="showPage('reports', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Laporan
+      </div>
+      <div class="nav-section-label">Sistem</div>
+      <div class="nav-item" onclick="showPage('users', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Manajemen User
+      </div>
+      <div class="nav-item" onclick="showPage('notifications', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        Notifikasi
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item" onclick="showPage('settings', this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+        Pengaturan
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="s-avatar">RK</div>
+        <div class="sidebar-user-info">
+          <div class="uname" id="s-name">Rina Kartika</div>
+          <div class="urole" id="s-role">Kasir</div>
+        </div>
+        <button class="sidebar-logout-btn" onclick="doLogout()" title="Keluar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-search">
+        <svg class="topbar-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" placeholder="Cari obat, transaksi, laporan..." />
+      </div>
+      <div class="topbar-btn" title="Notifikasi">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <span class="notif-dot">3</span>
+      </div>
+      <div class="topbar-btn" title="Profil">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      </div>
+      <div class="topbar-avatar" id="t-avatar">RK</div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h2>Dashboard</h2>
+          <p>Selamat datang kembali! Berikut ringkasan operasional Apotek Citra Sehat hari ini.</p>
+        </div>
+        <div class="stats-grid mb-24">
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="label">Penjualan Hari Ini</div>
+              <div class="value">Rp 2,45 Jt</div>
+              <div class="sub up">↑ +12% dari kemarin</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="label">Total Transaksi</div>
+              <div class="value">28</div>
+              <div class="sub up">↑ 5 transaksi baru</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.57-2.1-4.64-4.67-4.64-1.38 0-2.62.59-3.51 1.53-.89-.94-2.13-1.53-3.51-1.53C3.74 0 1.64 2.07 1.64 4.64c0 .48.11.92.18 1.36H0v14h20V6zm-8.5 12H3.5V8h8v10zm9 0h-8V8h8v10z"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="label">Stok Menipis</div>
+              <div class="value">7</div>
+              <div class="sub warn">Perlu restock segera</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">
+              <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="label">Hampir Kadaluarsa</div>
+              <div class="value">5</div>
+              <div class="sub danger">Dalam 30 hari</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-actions mb-24">
+          <button class="btn-action primary" onclick="showPage('transaction', document.querySelector('.nav-item:nth-child(6)'))">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Transaksi Baru
+          </button>
+          <button class="btn-action secondary" onclick="showPage('drugs', document.querySelector('.nav-item:nth-child(4)'))">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            Tambah Obat
+          </button>
+          <button class="btn-action outline" onclick="showPage('reports', document.querySelector('.nav-item:nth-child(11)'))">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Generate Laporan
+          </button>
+        </div>
+
+        <div class="grid-3-1 mb-24">
+          <div class="card">
+            <div class="card-header">
+              <h3>Grafik Penjualan — 7 Hari Terakhir</h3>
+              <select style="padding:5px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;outline:none;">
+                <option>7 Hari</option><option>30 Hari</option>
+              </select>
+            </div>
+            <div class="chart-area">
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div><div class="chart-label">Sen</div><div class="chart-value">1.9 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:72%"></div><div class="chart-label">Sel</div><div class="chart-value">2.1 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:48%"></div><div class="chart-label">Rab</div><div class="chart-value">1.7 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:85%"></div><div class="chart-label">Kam</div><div class="chart-value">2.3 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar active" style="height:92%"></div><div class="chart-label">Jum</div><div class="chart-value">2.5 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:62%"></div><div class="chart-label">Sab</div><div class="chart-value">2.0 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:35%"></div><div class="chart-label">Min</div><div class="chart-value">1.4 Jt</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Stok Menipis</h3><span class="card-link" onclick="showPage('stock', null)">Lihat Semua</span></div>
+            <div class="alert-item"><div class="alert-dot red"></div><span class="aname">Paracetamol 500mg</span><span class="aval red">Stok: 3</span></div>
+            <div class="alert-item"><div class="alert-dot red"></div><span class="aname">Amoxicillin 500mg</span><span class="aval red">Stok: 2</span></div>
+            <div class="alert-item"><div class="alert-dot orange"></div><span class="aname">CTM 4mg</span><span class="aval orange">Stok: 5</span></div>
+            <div class="alert-item"><div class="alert-dot orange"></div><span class="aname">Salbutamol 2mg</span><span class="aval orange">Stok: 4</span></div>
+            <div class="alert-item"><div class="alert-dot orange"></div><span class="aname">Loratadine 10mg</span><span class="aval orange">Stok: 5</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Transaksi Terbaru</h3>
+            <span class="card-link" onclick="showPage('history', null)">Lihat Semua</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>No. Transaksi</th><th>Tanggal & Waktu</th><th>Kasir</th><th>Total</th><th>Metode Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">TRX-20260502-028</td><td>02/05/2026 12:15</td><td>Rina Kartika</td><td class="strong">Rp 85.000</td><td>QRIS</td><td><span class="badge green">Selesai</span></td><td><button class="btn-action sm secondary">Detail</button></td></tr>
+              <tr><td class="strong">TRX-20260502-027</td><td>02/05/2026 12:01</td><td>Rina Kartika</td><td class="strong">Rp 120.000</td><td>Tunai</td><td><span class="badge green">Selesai</span></td><td><button class="btn-action sm secondary">Detail</button></td></tr>
+              <tr><td class="strong">TRX-20260502-026</td><td>02/05/2026 11:45</td><td>Rina Kartika</td><td class="strong">Rp 45.000</td><td>E-Wallet</td><td><span class="badge green">Selesai</span></td><td><button class="btn-action sm secondary">Detail</button></td></tr>
+              <tr><td class="strong">TRX-20260502-025</td><td>02/05/2026 11:30</td><td>Sela Marlina</td><td class="strong">Rp 175.000</td><td>Debit</td><td><span class="badge green">Selesai</span></td><td><button class="btn-action sm secondary">Detail</button></td></tr>
+              <tr><td class="strong">TRX-20260502-024</td><td>02/05/2026 10:58</td><td>Sela Marlina</td><td class="strong">Rp 32.000</td><td>Tunai</td><td><span class="badge green">Selesai</span></td><td><button class="btn-action sm secondary">Detail</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── DATA OBAT ── -->
+      <div class="page" id="page-drugs">
+        <div class="page-header"><h2>Data Obat</h2><p>Kelola inventori dan data master obat apotek</p></div>
+        <div class="filters-row">
+          <input type="search" placeholder="Cari nama obat, ID, barcode..." style="flex:0 0 260px;" />
+          <select><option>Semua Kategori</option><option>Obat Bebas</option><option>Antibiotik</option><option>Suplemen</option><option>Obat Keras</option><option>Psikotropika</option></select>
+          <select><option>Semua Status</option><option>Stok Aman</option><option>Stok Menipis</option><option>Stok Habis</option></select>
+          <div class="ml-auto">
+            <button class="btn-action secondary sm"><svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg> Import Excel</button>
+            <button class="btn-action outline sm"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 2V5h2v6h1.17L12 13.17 9.83 11H11zm-6 7h14v2H5z"/></svg> Export</button>
+            <button class="btn-action primary sm"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Tambah Obat</button>
+          </div>
+        </div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>ID Obat</th><th>Nama Obat</th><th>Nama Generik</th><th>Kategori</th><th>Harga Beli</th><th>Harga Jual</th><th>Stok</th><th>Tgl Kadaluarsa</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td>OBT-001</td><td class="strong">Paracetamol 500mg</td><td>Acetaminophen</td><td>Obat Bebas</td><td>Rp 9.000</td><td>Rp 15.000</td><td style="font-weight:800;color:var(--red);">3</td><td>15/12/2027</td><td><span class="badge yellow">Menipis</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-002</td><td class="strong">Amoxicillin 500mg</td><td>Amoxicillin</td><td>Antibiotik</td><td>Rp 28.000</td><td>Rp 45.000</td><td style="font-weight:800;color:var(--red);">2</td><td>08/06/2026</td><td><span class="badge red">Kritis</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-003</td><td class="strong">CTM 4mg</td><td>Chlorpheniramine</td><td>Obat Bebas</td><td>Rp 8.000</td><td>Rp 15.000</td><td style="font-weight:800;color:var(--orange);">5</td><td>22/09/2027</td><td><span class="badge yellow">Menipis</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-004</td><td class="strong">Ibuprofen 400mg</td><td>Ibuprofen</td><td>Obat Bebas</td><td>Rp 32.000</td><td>Rp 56.000</td><td style="font-weight:800;color:var(--green-600);">40</td><td>10/03/2028</td><td><span class="badge green">Aman</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-005</td><td class="strong">Antasida Doen</td><td>Mg(OH)₂ + Al(OH)₃</td><td>Obat Bebas</td><td>Rp 24.000</td><td>Rp 43.000</td><td style="font-weight:800;color:var(--green-600);">35</td><td>17/07/2027</td><td><span class="badge green">Aman</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-006</td><td class="strong">Vitamin C 500mg</td><td>Ascorbic Acid</td><td>Suplemen</td><td>Rp 14.000</td><td>Rp 24.000</td><td style="font-weight:800;color:var(--green-600);">60</td><td>01/01/2028</td><td><span class="badge green">Aman</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+              <tr><td>OBT-007</td><td class="strong">Metformin 500mg</td><td>Metformin HCl</td><td>Obat Keras</td><td>Rp 18.000</td><td>Rp 35.000</td><td style="font-weight:800;color:var(--orange);">12</td><td>22/06/2026</td><td><span class="badge yellow">Menipis</span></td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></div></td></tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span style="font-size:12px;color:var(--text-muted);margin-right:10px;">Menampilkan 1–7 dari 120 obat</span>
+            <button class="pg-btn">‹</button>
+            <button class="pg-btn active">1</button>
+            <button class="pg-btn">2</button>
+            <button class="pg-btn">3</button>
+            <button class="pg-btn">…</button>
+            <button class="pg-btn">18</button>
+            <button class="pg-btn">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TRANSAKSI BARU ── -->
+      <div class="page" id="page-transaction">
+        <div class="page-header">
+          <div class="breadcrumb">Penjualan › <span>Transaksi Baru</span></div>
+          <h2>Transaksi Baru &nbsp;<span style="font-size:14px;color:var(--text-muted);font-weight:400;">Shortcut: F2 untuk bayar</span></h2>
+        </div>
+        <div class="txn-layout">
+          <div>
+            <div class="card mb-20">
+              <div class="card-header"><h3>Scan / Cari Obat</h3><span style="font-size:11px;color:var(--text-muted);">Barcode scanner aktif secara otomatis</span></div>
+              <div style="padding:18px;">
+                <div class="search-bar-row">
+                  <input type="text" placeholder="Scan barcode atau ketik nama / kode obat..." value="Paracetamol" />
+                  <button class="btn-scan">
+                    <svg viewBox="0 0 24 24"><path d="M1 5h2v14H1zm4 0h1v14H5zm2 0h2v14H7zm3 0h2v14h-2zm3 0h2v14h-2zm3 0h1v14h-1zm2 0h3v14h-3z"/></svg>
+                    Scan Barcode
+                  </button>
+                </div>
+                <div class="drug-info-panel">
+                  <div class="dip-item"><div class="dip-label">Nama Obat</div><div class="dip-val">Paracetamol 500mg</div></div>
+                  <div class="dip-item"><div class="dip-label">Harga Satuan</div><div class="dip-val green">Rp 15.000</div></div>
+                  <div class="dip-item"><div class="dip-label">Stok Tersedia</div><div class="dip-val orange">3 Tablet</div></div>
+                  <div class="dip-item">
+                    <div class="dip-label">Jumlah Beli</div>
+                    <div class="qty-ctrl">
+                      <button class="qty-btn">−</button>
+                      <span class="qty-val" id="qty-now">2</span>
+                      <button class="qty-btn">+</button>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-action primary" style="width:100%;justify-content:center;padding:13px;">
+                  <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                  Tambah ke Keranjang
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3>Keranjang Belanja</h3><button class="btn-action danger sm">Kosongkan</button></div>
+              <table class="data-table">
+                <thead><tr><th>Nama Obat</th><th>Harga Satuan</th><th>Jumlah</th><th>Subtotal</th><th></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="strong">Paracetamol 500mg</td>
+                    <td>Rp 15.000</td>
+                    <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-val">2</span><button class="qty-btn">+</button></div></td>
+                    <td class="strong" style="color:var(--green-600);">Rp 30.000</td>
+                    <td><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td class="strong">Amoxicillin 500mg</td>
+                    <td>Rp 45.000</td>
+                    <td><div class="qty-ctrl"><button class="qty-btn">−</button><span class="qty-val">1</span><button class="qty-btn">+</button></div></td>
+                    <td class="strong" style="color:var(--green-600);">Rp 45.000</td>
+                    <td><button class="btn-icon danger"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="padding:14px 18px;background:#FAFFF9;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px;">
+                <span style="color:var(--text-muted);">Total Item: <strong style="color:var(--text-dark);">3</strong></span>
+                <span style="color:var(--text-muted);">Subtotal: <strong style="color:var(--text-dark);font-size:16px;font-family:'Sora',sans-serif;">Rp 75.000</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-panel">
+            <div class="pp-header"><h3>Ringkasan Pembayaran</h3></div>
+            <div class="total-display">
+              <div class="tl">Total Pembayaran</div>
+              <div class="tv">Rp 75.000</div>
+            </div>
+            <div class="discount-row">
+              <label>Diskon (%)</label>
+              <input type="text" placeholder="0" />
+              <span style="font-size:13px;color:var(--text-muted);">Hemat Rp 0</span>
+            </div>
+            <div class="pm-section">
+              <div class="pm-label">Metode Pembayaran</div>
+              <div class="pm-options">
+                <div class="pm-opt" onclick="selPM(this)">
+                  <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15z"/></svg> Tunai
+                </div>
+                <div class="pm-opt selected" onclick="selPM(this)">QRIS</div>
+                <div class="pm-opt" onclick="selPM(this)">E-Wallet</div>
+                <div class="pm-opt" onclick="selPM(this)">Debit</div>
+              </div>
+            </div>
+            <div class="cash-section">
+              <div class="cash-row">
+                <label>Uang Diterima</label>
+                <input type="text" value="Rp 100.000" id="cash-in" oninput="calcChange()" />
+              </div>
+              <div class="change-display">
+                <span class="cd-l">Kembalian</span>
+                <span class="cd-v" id="change-val">Rp 25.000</span>
+              </div>
+            </div>
+            <button class="pay-btn">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+              BAYAR
+              <small>F2</small>
+            </button>
+            <div class="action-row">
+              <button class="btn-action secondary" style="flex:1;justify-content:center;">
+                <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3z"/></svg>
+                Cetak Struk
+              </button>
+              <button class="btn-action outline" style="flex:1;justify-content:center;">Batal Transaksi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RIWAYAT TRANSAKSI ── -->
+      <div class="page" id="page-history">
+        <div class="page-header">
+          <div class="breadcrumb">Penjualan › <span>Riwayat Transaksi</span></div>
+          <h2>Riwayat Transaksi</h2>
+        </div>
+        <div class="filters-row">
+          <input type="date" value="2026-04-14" />
+          <span style="color:var(--text-muted);font-size:13px;font-weight:600;">s/d</span>
+          <input type="date" value="2026-05-02" />
+          <select><option>Semua Kasir</option><option>Rina Kartika</option><option>Sela Marlina</option></select>
+          <select><option>Semua Metode</option><option>Tunai</option><option>QRIS</option><option>E-Wallet</option><option>Debit</option></select>
+          <select><option>Semua Status</option><option>Selesai</option><option>Refund</option></select>
+          <button class="btn-action primary sm">Filter</button>
+          <div class="ml-auto">
+            <button class="btn-action secondary sm">Export PDF</button>
+            <button class="btn-action outline sm">Export Excel</button>
+          </div>
+        </div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>No. Transaksi</th><th>Tanggal & Waktu</th><th>Kasir</th><th>Total</th><th>Metode Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody>
+              <tr><td class="strong">TRX-20260502-028</td><td>02/05/2026 12:15</td><td>Rina Kartika</td><td class="strong">Rp 85.000</td><td>QRIS</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260502-027</td><td>02/05/2026 12:01</td><td>Rina Kartika</td><td class="strong">Rp 120.000</td><td>Tunai</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260419-015</td><td>19/04/2026 16:45</td><td>Rina Kartika</td><td class="strong">Rp 45.000</td><td>E-Wallet</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260419-014</td><td>19/04/2026 14:20</td><td>Sela Marlina</td><td class="strong">Rp 75.000</td><td>Debit</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260419-013</td><td>19/04/2026 11:05</td><td>Sela Marlina</td><td class="strong">Rp 60.000</td><td>Tunai</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260419-012</td><td>19/04/2026 10:49</td><td>Sela Marlina</td><td class="strong">Rp 175.000</td><td>QRIS</td><td><span class="badge yellow">Refund</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+              <tr><td class="strong">TRX-20260419-011</td><td>19/04/2026 10:15</td><td>Sela Marlina</td><td class="strong">Rp 18.000</td><td>Tunai</td><td><span class="badge green">Selesai</span></td><td><div style="display:flex;gap:6px;"><button class="btn-action sm secondary">Detail</button><button class="btn-action sm outline">Cetak Ulang</button></div></td></tr>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span style="font-size:12px;color:var(--text-muted);margin-right:10px;">Menampilkan 1–7 dari 187 transaksi</span>
+            <button class="pg-btn">‹</button>
+            <button class="pg-btn active">1</button>
+            <button class="pg-btn">2</button>
+            <button class="pg-btn">3</button>
+            <button class="pg-btn">4</button>
+            <button class="pg-btn">›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MANAJEMEN STOK ── -->
+      <div class="page" id="page-stock">
+        <div class="page-header"><h2>Manajemen Stok</h2><p>Monitor dan kelola stok obat secara real-time</p></div>
+        <div class="grid-3 mb-20">
+          <div class="stat-card"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36 0-2.57-2.1-4.64-4.67-4.64-1.38 0-2.62.59-3.51 1.53-.89-.94-2.13-1.53-3.51-1.53C3.74 0 1.64 2.07 1.64 4.64c0 .48.11.92.18 1.36H0v14h20V6z"/></svg></div><div class="stat-info"><div class="label">Total Jenis Obat</div><div class="value">120</div><div class="sub">Terdaftar di sistem</div></div></div>
+          <div class="stat-card"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg></div><div class="stat-info"><div class="label">Total Unit Stok</div><div class="value">1.250</div><div class="sub up">Stok agregat</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="stat-info"><div class="label">Perlu Restock</div><div class="value">7</div><div class="sub warn">Di bawah stok minimum</div></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3>Visualisasi Stok Obat</h3></div>
+            <div style="padding:20px;">
+              <div class="stock-bar-row"><div class="stock-bar-name">Paracetamol 500mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:6%;background:var(--red);"></div></div><span class="stock-bar-val" style="color:var(--red);">3</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Amoxicillin 500mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:4%;background:var(--red);"></div></div><span class="stock-bar-val" style="color:var(--red);">2</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">CTM 4mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:10%;background:var(--orange);"></div></div><span class="stock-bar-val" style="color:var(--orange);">5</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Salbutamol 2mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:8%;background:var(--orange);"></div></div><span class="stock-bar-val" style="color:var(--orange);">4</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Metformin 500mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:24%;background:var(--orange);"></div></div><span class="stock-bar-val" style="color:var(--orange);">12</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Ibuprofen 400mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:80%;background:var(--green-400);"></div></div><span class="stock-bar-val" style="color:var(--green-600);">40</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Antasida Doen</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:70%;background:var(--green-400);"></div></div><span class="stock-bar-val" style="color:var(--green-600);">35</span></div>
+              <div class="stock-bar-row"><div class="stock-bar-name">Vitamin C 500mg</div><div class="stock-bar-bg"><div class="stock-bar-fill" style="width:100%;background:var(--green-400);"></div></div><span class="stock-bar-val" style="color:var(--green-600);">60</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Penyesuaian Stok</h3></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+              <div><div class="fg-label">Pilih Obat</div><select class="fg-select"><option>-- Pilih Obat --</option><option>Paracetamol 500mg (Stok: 3)</option><option>Amoxicillin 500mg (Stok: 2)</option><option>CTM 4mg (Stok: 5)</option></select></div>
+              <div><div class="fg-label">Jenis Penyesuaian</div>
+                <div style="display:flex;gap:8px;">
+                  <div class="pm-opt selected" style="flex:1;cursor:pointer;">+ Tambah Stok</div>
+                  <div class="pm-opt" style="flex:1;cursor:pointer;">− Kurangi Stok</div>
+                </div>
+              </div>
+              <div><div class="fg-label">Jumlah Unit</div><input class="fg-input" type="number" placeholder="0" /></div>
+              <div><div class="fg-label">No. Batch / Lot</div><input class="fg-input" type="text" placeholder="BCH-2026-XXX" /></div>
+              <div><div class="fg-label">Alasan Penyesuaian</div><select class="fg-select"><option>Pembelian dari Supplier</option><option>Retur ke Supplier</option><option>Rusak / Kadaluarsa</option><option>Koreksi Data Manual</option><option>Rusak saat Pengiriman</option></select></div>
+              <div><div class="fg-label">Catatan Tambahan</div><textarea class="fg-input" rows="2" placeholder="Opsional..."></textarea></div>
+              <button class="btn-action primary" style="justify-content:center;padding:13px;">Simpan Penyesuaian Stok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MONITORING KADALUARSA ── -->
+      <div class="page" id="page-expiry">
+        <div class="page-header"><h2>Monitoring Kadaluarsa</h2><p>Pantau obat yang mendekati tanggal kedaluwarsa — Apoteker View</p></div>
+        <div class="exp-tabs mb-20">
+          <div class="exp-tab active">≤ 30 Hari</div>
+          <div class="exp-tab">≤ 60 Hari</div>
+          <div class="exp-tab">≤ 90 Hari</div>
+        </div>
+        <div class="grid-2 mb-20">
+          <div class="card">
+            <div class="card-header"><h3>Daftar Obat Hampir Kadaluarsa</h3><span class="badge red">5 Obat</span></div>
+            <table class="data-table">
+              <thead><tr><th>Nama Obat</th><th>No. Batch</th><th>Stok</th><th>Tgl Kadaluarsa</th><th>Sisa Hari</th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Amoxicillin 500mg</td><td>BCH-2024-089</td><td style="color:var(--red);font-weight:800;">2</td><td>08/06/2026</td><td><span class="badge red">37 hari</span></td></tr>
+                <tr><td class="strong">Codein 10mg</td><td>BCH-2024-112</td><td style="color:var(--orange);font-weight:800;">8</td><td>15/06/2026</td><td><span class="badge red">44 hari</span></td></tr>
+                <tr><td class="strong">Metformin 500mg</td><td>BCH-2024-201</td><td style="color:var(--orange);font-weight:800;">12</td><td>22/06/2026</td><td><span class="badge yellow">51 hari</span></td></tr>
+                <tr><td class="strong">Captopril 12.5mg</td><td>BCH-2024-178</td><td style="color:var(--orange);font-weight:800;">6</td><td>28/06/2026</td><td><span class="badge yellow">57 hari</span></td></tr>
+                <tr><td class="strong">Alprazolam 0.5mg</td><td>BCH-2024-093</td><td style="color:var(--orange);font-weight:800;">4</td><td>30/06/2026</td><td><span class="badge yellow">59 hari</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Tindakan & Rekomendasi</h3></div>
+            <div style="padding:20px;">
+              <div class="info-box">
+                <h4>⚠ Retur ke Supplier — Amoxicillin 500mg</h4>
+                <p>Batch BCH-2024-089 kadaluarsa 8 Jun 2026 (37 hari). Stok tersisa 2 unit. Segera proses formulir retur ke distributor Kimia Farma.</p>
+                <button class="btn-action danger sm" style="margin-top:10px;">Proses Retur</button>
+              </div>
+              <div class="info-box orange">
+                <h4>🏷 Promo Diskon — Metformin 500mg</h4>
+                <p>12 unit stok Metformin kadaluarsa 22 Jun 2026. Rekomendasikan diskon 25% untuk mempercepat penjualan sebelum kedaluwarsa.</p>
+                <button class="btn-action secondary sm" style="margin-top:10px;">Buat Promo Diskon</button>
+              </div>
+              <div class="info-box orange">
+                <h4>📋 Codein 10mg — Verifikasi Resep Wajib</h4>
+                <p>8 unit Codein mendekati kadaluarsa. Pastikan setiap pengeluaran disertai resep dokter yang valid. Audit trail wajib dicatat.</p>
+                <button class="btn-action secondary sm" style="margin-top:10px;">Lihat Audit Trail</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LAPORAN ── -->
+      <div class="page" id="page-reports">
+        <div class="page-header"><h2>Laporan</h2><p>Analisa komprehensif data penjualan dan stok apotek — Owner & Admin View</p></div>
+        <div class="report-tabs mb-20">
+          <div class="report-tab active">Laporan Penjualan</div>
+          <div class="report-tab">Laporan Stok</div>
+          <div class="report-tab">Laporan Profit</div>
+          <div class="report-tab">Aktivitas Pengguna</div>
+        </div>
+        <div class="filters-row mb-20">
+          <div class="pm-opt" style="cursor:pointer;padding:8px 18px;font-size:13px;">Hari Ini</div>
+          <div class="pm-opt selected" style="cursor:pointer;padding:8px 18px;font-size:13px;">Minggu Ini</div>
+          <div class="pm-opt" style="cursor:pointer;padding:8px 18px;font-size:13px;">Bulan Ini</div>
+          <div class="pm-opt" style="cursor:pointer;padding:8px 18px;font-size:13px;">Tahun Ini</div>
+          <div class="pm-opt" style="cursor:pointer;padding:8px 18px;font-size:13px;">Custom Range</div>
+          <div class="ml-auto">
+            <button class="btn-action secondary sm">Export PDF</button>
+            <button class="btn-action outline sm">Export Excel</button>
+            <button class="btn-action primary sm">Print</button>
+          </div>
+        </div>
+        <div class="stats-grid mb-24">
+          <div class="stat-card"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85z"/></svg></div><div class="stat-info"><div class="label">Total Pendapatan</div><div class="value">Rp 14,2 Jt</div><div class="sub up">↑ +18% vs minggu lalu</div></div></div>
+          <div class="stat-card"><div class="stat-icon blue"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div><div class="stat-info"><div class="label">Total Transaksi</div><div class="value">187</div><div class="sub up">↑ +24 transaksi</div></div></div>
+          <div class="stat-card"><div class="stat-icon orange"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15z"/></svg></div><div class="stat-info"><div class="label">Rata-rata Transaksi</div><div class="value">Rp 75.935</div><div class="sub">Per transaksi</div></div></div>
+          <div class="stat-card"><div class="stat-icon green"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55z"/></svg></div><div class="stat-info"><div class="label">Obat Terlaris</div><div class="value" style="font-size:16px;">Paracetamol 500mg</div><div class="sub">48 unit terjual</div></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><h3>Penjualan Harian</h3></div>
+            <div class="chart-area">
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><div class="chart-label">26/4</div><div class="chart-value">1.6 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:68%"></div><div class="chart-label">27/4</div><div class="chart-value">2.0 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:52%"></div><div class="chart-label">28/4</div><div class="chart-value">1.8 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:78%"></div><div class="chart-label">29/4</div><div class="chart-value">2.2 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:40%"></div><div class="chart-label">30/4</div><div class="chart-value">1.5 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar" style="height:30%"></div><div class="chart-label">1/5</div><div class="chart-value">1.2 Jt</div></div>
+              <div class="chart-bar-wrap"><div class="chart-bar active" style="height:92%"></div><div class="chart-label">2/5</div><div class="chart-value">2.5 Jt</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Distribusi per Kategori</h3></div>
+            <div style="padding:22px;">
+              <div class="category-bar"><div class="cat-dot" style="background:var(--green-600);"></div><span class="cat-label">Obat Bebas</span><div style="flex:2;height:10px;background:var(--border);border-radius:5px;overflow:hidden;"><div style="width:42%;height:100%;background:var(--green-600);border-radius:5px;"></div></div><span class="cat-val" style="min-width:40px;text-align:right;">42%</span></div>
+              <div class="category-bar"><div class="cat-dot" style="background:var(--blue-600);"></div><span class="cat-label">Antibiotik</span><div style="flex:2;height:10px;background:var(--border);border-radius:5px;overflow:hidden;"><div style="width:28%;height:100%;background:var(--blue-600);border-radius:5px;"></div></div><span class="cat-val" style="min-width:40px;text-align:right;">28%</span></div>
+              <div class="category-bar"><div class="cat-dot" style="background:var(--orange);"></div><span class="cat-label">Suplemen</span><div style="flex:2;height:10px;background:var(--border);border-radius:5px;overflow:hidden;"><div style="width:18%;height:100%;background:var(--orange);border-radius:5px;"></div></div><span class="cat-val" style="min-width:40px;text-align:right;">18%</span></div>
+              <div class="category-bar"><div class="cat-dot" style="background:#9C27B0;"></div><span class="cat-label">Obat Keras</span><div style="flex:2;height:10px;background:var(--border);border-radius:5px;overflow:hidden;"><div style="width:12%;height:100%;background:#9C27B0;border-radius:5px;"></div></div><span class="cat-val" style="min-width:40px;text-align:right;">12%</span></div>
+              <div style="margin-top:20px;padding:14px;background:var(--green-50);border-radius:var(--radius-sm);border:1px solid var(--green-100);">
+                <div style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:8px;">Top 3 Obat Terlaris</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">1. Paracetamol 500mg — 48 unit</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">2. Amoxicillin 500mg — 32 unit</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text-dark);">3. Vitamin C 500mg — 28 unit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MANAJEMEN USER ── -->
+      <div class="page" id="page-users">
+        <div class="page-header"><h2>Manajemen Pengguna</h2><p>Kelola akun dan hak akses pengguna sistem — Admin Only</p></div>
+        <div class="grid-2 mb-20">
+          <div class="card">
+            <div class="card-header"><h3>Daftar Pengguna</h3><button class="btn-action primary sm"><svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:white;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Tambah User</button></div>
+            <table class="data-table">
+              <thead><tr><th>Nama Lengkap</th><th>Username</th><th>Role</th><th>Status</th><th>Login Terakhir</th><th>Aksi</th></tr></thead>
+              <tbody>
+                <tr><td class="strong">Siti Aminah, A.Md.Farm.</td><td>siti.admin</td><td><span class="badge blue">Admin</span></td><td><span class="badge green">Aktif</span></td><td>02/05 09:00</td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg></button></div></td></tr>
+                <tr><td class="strong">Dr. apt. Budi Santoso, M.Kes.</td><td>budi.apoteker</td><td><span class="badge purple">Apoteker</span></td><td><span class="badge green">Aktif</span></td><td>02/05 08:30</td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg></button></div></td></tr>
+                <tr><td class="strong">Rina Kartika, S.Farm.</td><td>rina.kasir</td><td><span class="badge green">Kasir</span></td><td><span class="badge green">Aktif</span></td><td>02/05 12:15</td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg></button></div></td></tr>
+                <tr><td class="strong">Hendra Wijaya, S.E., Apt.</td><td>hendra.pemilik</td><td><span class="badge orange">Pemilik</span></td><td><span class="badge green">Aktif</span></td><td>01/05 22:10</td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg></button></div></td></tr>
+                <tr><td class="strong">Sela Marlina</td><td>sela.kasir2</td><td><span class="badge green">Kasir</span></td><td><span class="badge gray">Nonaktif</span></td><td>28/04 17:30</td><td><div class="btn-icon-row"><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button><button class="btn-icon"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg></button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Matriks Hak Akses</h3></div>
+            <table class="perm-table">
+              <thead><tr><th>Fitur Sistem</th><th>Admin</th><th>Kasir</th><th>Apoteker</th><th>Pemilik</th></tr></thead>
+              <tbody>
+                <tr><td>Dashboard</td><td><div class="perm-check checked"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check checked"></div></td></tr>
+                <tr><td>Data Obat (CRUD)</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td></tr>
+                <tr><td>Transaksi Penjualan</td><td><div class="perm-check checked"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check"></div></td></tr>
+                <tr><td>Riwayat Transaksi</td><td><div class="perm-check checked"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td></tr>
+                <tr><td>Manajemen Stok</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td></tr>
+                <tr><td>Monitoring Kadaluarsa</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td></tr>
+                <tr><td>Laporan & Analitik</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td></tr>
+                <tr><td>Manajemen Pengguna</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check"></div></td></tr>
+                <tr><td>Pengaturan Sistem</td><td><div class="perm-check checked"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check"></div></td><td><div class="perm-check checked"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NOTIFIKASI ── -->
+      <div class="page" id="page-notifications">
+        <div class="page-header"><h2>Pusat Notifikasi</h2></div>
+        <div class="filters-row mb-20">
+          <div class="report-tab active">Semua (3)</div>
+          <div class="report-tab">Stok (2)</div>
+          <div class="report-tab">Kadaluarsa (1)</div>
+          <div class="report-tab">Sistem (2)</div>
+          <div class="ml-auto"><button class="btn-action secondary sm">Tandai Semua Dibaca</button></div>
+        </div>
+        <div class="card">
+          <div class="notif-item unread"><div class="notif-icon expiry"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></div><div class="notif-body"><div class="nt">Amoxicillin 500mg — hampir kadaluarsa!</div><div class="nm">Batch BCH-2024-089 akan kadaluarsa pada 8 Jun 2026. Stok tersisa 2 unit. Segera proses retur ke supplier atau lakukan disposisi.</div><div class="ntime">2 menit yang lalu</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item unread"><div class="notif-icon stock"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.07 15.93 0 13.36 0c-1.38 0-2.62.59-3.51 1.53z"/></svg></div><div class="notif-body"><div class="nt">Stok Paracetamol 500mg kritis — perlu restock</div><div class="nm">Sisa stok hanya 3 unit, jauh di bawah batas minimum (10 unit). Segera lakukan pemesanan ulang ke distributor.</div><div class="ntime">15 menit yang lalu</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item unread"><div class="notif-icon stock"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.07 15.93 0 13.36 0c-1.38 0-2.62.59-3.51 1.53z"/></svg></div><div class="notif-body"><div class="nt">Stok Amoxicillin 500mg habis kritis</div><div class="nm">Hanya tersisa 2 unit. Stok akan habis dalam 1–2 transaksi berikutnya. Prioritaskan pemesanan.</div><div class="ntime">1 jam yang lalu</div></div><div class="unread-dot"></div></div>
+          <div class="notif-item"><div class="notif-icon system"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div><div class="notif-body"><div class="nt">Backup database otomatis berhasil</div><div class="nm">Backup terjadwal berhasil dilakukan pukul 02:00 WIB. File disimpan di server lokal apotek.</div><div class="ntime">8 jam yang lalu</div></div></div>
+          <div class="notif-item"><div class="notif-icon system"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div><div class="notif-body"><div class="nt">Login dari perangkat baru terdeteksi</div><div class="nm">Sela Marlina (kasir2) login dari perangkat baru pada 01/05/2026 pukul 08:45 WIB. Verifikasi jika bukan Anda.</div><div class="ntime">Kemarin, 08:45</div></div></div>
+        </div>
+      </div>
+
+      <!-- ── PENGATURAN ── -->
+      <div class="page" id="page-settings">
+        <div class="page-header"><h2>Pengaturan & Profil</h2></div>
+        <div class="settings-layout">
+          <div class="settings-nav">
+            <div class="sn-item active"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>Profil Saya</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12z"/></svg>Info Apotek</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12z"/></svg>Keamanan</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3z"/></svg>Format Struk</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4z"/></svg>Backup & Restore</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>Log Audit</div>
+            <div class="sn-item"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2z"/></svg>Notifikasi</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Profil Pengguna</h3><span class="badge green">Perubahan Tersimpan</span></div>
+            <div class="form-grid">
+              <div><div class="fg-label">Nama Lengkap</div><input class="fg-input valid" value="Rina Kartika, S.Farm." /></div>
+              <div><div class="fg-label">Username</div><input class="fg-input" value="rina.kasir" /></div>
+              <div><div class="fg-label">Email</div><input class="fg-input" type="email" value="rina.kartika@apotekcitra.com" /></div>
+              <div><div class="fg-label">No. Telepon</div><input class="fg-input" value="0812-3456-7890" /></div>
+              <div><div class="fg-label">Role</div><input class="fg-input" value="Kasir" disabled style="background:#F5F5F5;color:var(--text-muted);" /></div>
+              <div><div class="fg-label">Bergabung Sejak</div><input class="fg-input" value="15 Januari 2025" disabled style="background:#F5F5F5;color:var(--text-muted);" /></div>
+              <div><div class="fg-label">Password Baru</div><input class="fg-input" type="password" placeholder="Kosongkan jika tidak diubah" /></div>
+              <div><div class="fg-label">Konfirmasi Password Baru</div><input class="fg-input" type="password" placeholder="Ulangi password baru" /></div>
+              <div class="span-2" style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+                <button class="btn-action secondary">Batal</button>
+                <button class="btn-action primary">Simpan Perubahan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- .content-area -->
+  </div><!-- .main-content -->
+</div><!-- #main-app -->
+</div><!-- #app -->
+
+<script>
+const roleMap = {
+  Kasir:   { initials:'RK', name:'Rina Kartika',         role:'Kasir' },
+  Admin:   { initials:'SA', name:'Siti Aminah',           role:'Admin' },
+  Apoteker:{ initials:'BS', name:'Dr. Budi Santoso',      role:'Apoteker' },
+  Pemilik: { initials:'HW', name:'Hendra Wijaya',         role:'Pemilik Apotek' }
+};
+const pageTitles = {
+  dashboard:'Dashboard', drugs:'Data Obat', transaction:'Transaksi Baru',
+  history:'Riwayat Transaksi', stock:'Manajemen Stok', expiry:'Monitoring Kadaluarsa',
+  reports:'Laporan', users:'Manajemen Pengguna', notifications:'Pusat Notifikasi', settings:'Pengaturan & Profil'
+};
+
+function doLogin() {
+  const role = document.getElementById('login-role').value;
+  const u = roleMap[role];
+  ['s-avatar','t-avatar'].forEach(id => document.getElementById(id).textContent = u.initials);
+  document.getElementById('s-name').textContent = u.name;
+  document.getElementById('s-role').textContent = u.role;
+  document.getElementById('login-screen').classList.remove('active');
+  document.getElementById('main-app').classList.add('active');
+}
+function doLogout() {
+  document.getElementById('main-app').classList.remove('active');
+  document.getElementById('login-screen').classList.add('active');
+}
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const p = document.getElementById('page-'+id);
+  if (p) p.classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = pageTitles[id] || id;
+}
+function selPM(el) {
+  el.closest('.pm-options').querySelectorAll('.pm-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function calcChange() {
+  const raw = (document.getElementById('cash-in').value||'').replace(/[^0-9]/g,'');
+  const val = parseInt(raw)||0;
+  const change = Math.max(0, val - 75000);
+  document.getElementById('change-val').textContent = 'Rp ' + change.toLocaleString('id-ID');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'F2') {
+    e.preventDefault();
+    const txnNav = document.querySelector('.nav-item:nth-child(6)');
+    showPage('transaction', txnNav);
+  }
+});
+</script>
+</body>
+</html>
